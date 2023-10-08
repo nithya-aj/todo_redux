@@ -4,14 +4,14 @@ import addIcon from './images/plus.png'
 import trash from './images/trash.png'
 import edit from './images/edit.png'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodo } from './features/todo/todoSlice';
+import { addTodo, deleteTodo } from './features/todo/todoSlice';
 
 function App() {
   const dispatch = useDispatch()
   const [done, setDone] = useState(false)
   const [input, setInput] = useState("")
   const todos = useSelector(state => state.todos)
-  console.log(todos, 'todos')
+
   const addTodoHandler = (e) => {
     e.preventDefault()
     dispatch(addTodo(input))
@@ -42,7 +42,7 @@ function App() {
                 </div>
                 <div className='flex gap-2 items-center'>
                   <img src={edit} alt="" className='h-[0.8rem] cursor-pointer' />
-                  <img src={trash} alt="" className='h-[1rem] cursor-pointer' />
+                  <img src={trash} alt="" className='h-[1rem] cursor-pointer' onClick={() => dispatch(deleteTodo(todo.id))} />
                 </div>
               </div>))}
 
