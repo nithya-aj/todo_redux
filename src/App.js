@@ -5,11 +5,10 @@ import trash from './images/trash.png'
 import edit from './images/edit.png'
 import check from './images/check.png'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodo, deleteTodo, editTodo } from './features/todo/todoSlice';
+import { addTodo, deleteTodo, editTodo, markAsDone } from './features/todo/todoSlice';
 
 function App() {
   const dispatch = useDispatch()
-  const [done, setDone] = useState(false)
   const [input, setInput] = useState("")
   const [edited, setEdited] = useState(false)
   const [editInput, setEditInput] = useState({})
@@ -43,19 +42,17 @@ function App() {
         </form>
         <div className='h-full overflow-y-auto'>
           <div className='flex flex-col gap-2 pr-1'>
-
             {todos.map((todo) => (
-              <div key={todo.id} className='bg-[#D0B3C0] rounded-md px-2 py-2 overflow-hidden break-words text-[0.9rem] flex items-center justify-between'>
+              <div key={todo.id} className={`${todo.done ? 'bg-[#D8C0CB]' : 'bg-[#D0B3C0] '} rounded-md px-2 py-2 overflow-hidden break-words text-[0.9rem] flex items-center justify-between`}>
                 <div className='flex gap-1 items-center '>
-                  <div onClick={() => setDone(!done)} className={`h-3 w-3 border border-[#827081] rounded-[4px] cursor-pointer ${done ? 'bg-[#827081]' : ''}`}></div>
-                  {todo.text}
+                  <div onClick={() => { dispatch(markAsDone({ id: todo.id })) }} className={`h-3 w-3 border border-[#827081] rounded-[4px] cursor-pointer ${todo.done ? 'bg-[#827081] opacity-40' : ''}`}></div>
+                  <p className={`${todo.done ? 'line-through text-gray-400' : ''}`}>{todo.text}</p>
                 </div>
                 <div className='flex gap-2 items-center'>
-                  <img src={edit} alt="" className='h-[0.8rem] cursor-pointer' onClick={() => { setEditInput(todo); setEdited(true) }} />
-                  <img src={trash} alt="" className='h-[1rem] cursor-pointer' onClick={() => dispatch(deleteTodo(todo.id))} />
+                  <img src={edit} alt="" className={`h-[0.8rem] cursor-pointer ${todo.done ? 'hidden' : ''}`} onClick={() => { setEditInput(todo); setEdited(true) }} />
+                  <img src={trash} alt="" className={`h-[1rem] cursor-pointer ${todo.done ? 'opacity-50' : ''}`} onClick={() => dispatch(deleteTodo(todo.id))} />
                 </div>
               </div>))}
-
           </div>
         </div>
       </div>
