@@ -12,19 +12,30 @@ function App() {
   const [input, setInput] = useState("")
   const [edited, setEdited] = useState(false)
   const [editInput, setEditInput] = useState({})
+  const [error, setError] = useState("")
   const todos = useSelector(state => state.todos)
 
   const addTodoHandler = (e) => {
     e.preventDefault()
+    if (input.trim() === "") {
+      setError("Todo cannot be empty.")
+      return;
+    }
     dispatch(addTodo(input))
     setInput('')
+    setError('');
   }
 
   const editTodoHandler = (e) => {
     e.preventDefault()
+    if (input.trim() === "") {
+      setError("Todo cannot be empty.")
+      return;
+    }
     dispatch(editTodo(editInput))
     setEditInput('')
     setEdited(false)
+    setError('');
   }
 
   return (
@@ -40,13 +51,14 @@ function App() {
             {edited ? <img src={check} alt="" className='h-[0.99rem] cursor-pointer' /> : <img src={addIcon} alt="" className='h-[0.9rem]' />}
           </button>
         </form>
+        {error && <p className='text-red-500 text-sm'>{error}</p>}
         <div className='h-full overflow-y-auto'>
           <div className='flex flex-col gap-2 pr-1'>
             {todos.map((todo) => (
               <div key={todo.id} className={`${todo.done ? 'bg-[#D8C0CB]' : 'bg-[#D0B3C0] '} rounded-md px-2 py-2 overflow-hidden break-words text-[0.9rem] flex items-center justify-between`}>
                 <div className='flex gap-1 items-center '>
                   <div onClick={() => { dispatch(markAsDone({ id: todo.id })) }} className={`h-3 w-3 border border-[#827081] rounded-[4px] cursor-pointer ${todo.done ? 'bg-[#827081] opacity-40' : ''}`}></div>
-                  <p className={`${todo.done ? 'line-through text-gray-400' : ''}`}>{todo.text}</p>
+                  <p className={`${todo.done ? 'line-through text-gray-400' : ''}, w-[18rem]`}>{todo.text}</p>
                 </div>
                 <div className='flex gap-2 items-center'>
                   <img src={edit} alt="" className={`h-[0.8rem] cursor-pointer ${todo.done ? 'hidden' : ''}`} onClick={() => { setEditInput(todo); setEdited(true) }} />
